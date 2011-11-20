@@ -52,7 +52,7 @@ struct subscript {
 
 template<class R, class Index>
 struct subscript_range : 
-    boost::transform_range<
+    boost::transformed_range<
         subscript<
             // boost::range_value just return the value with const removed.
             typename boost::remove_reference<
@@ -70,7 +70,7 @@ private:
         >::type,
         Index
     > sub;
-    typedef boost::transform_range<sub, R> base;
+    typedef boost::transformed_range<sub, R> base;
 
 public:
     subscript_range(R &r, Index i) : base(sub(i), r) {}

@@ -33,6 +33,7 @@ public:
     typedef access_ptr<T> this_type;
     typedef T *pointee;
     typedef T &reference;
+    typedef T element_type;
     typedef boost::function<T&()> accessor;
     
 public:
@@ -47,18 +48,22 @@ public:
         //assert(p && "Null pointer.");
     }
     
-    // Convert from other accessor.
-    template<class Accessor>
-    access_ptr(
-        Accessor get, 
-        typename boost::enable_if<
-            typename boost::is_convertible<Accessor, accessor>
-        >::type *dumb = 0
-    ) :
-        f(get)
-    {
-        //assert(f && "Invalid accessor.");
-    }
+    //// Convert from other accessor.
+    //template<class Accessor>
+    //access_ptr(
+    //    Accessor get, 
+    //    typename boost::enable_if<
+    //        typename boost::is_convertible<Accessor, accessor>
+    //    >::type *dumb = 0
+    //) :
+    //    f(get)
+    //{
+    //    //assert(f && "Invalid accessor.");
+    //}
+
+    access_ptr(const accessor &get) : f(get) {}
+
+    //access_ptr(const this_type &other) : f(other.f) {}
     
     pointee get() const {
         assert(f);

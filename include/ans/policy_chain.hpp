@@ -60,8 +60,17 @@ namespace ans
         template<class Policy, class Base, class DeriveFromTail = typename boost::is_base_of<derive_from_tail, Policy>::type>
         struct policy_chain_node;
 
+        template<class Policy, class Base, class C4584 = typename boost::is_base_of<Base, Policy>::type>
+        struct multi_base;
+
         template<class Policy, class Base>
-        struct policy_chain_node<Policy, Base, boost::false_type> : Policy, Base {};
+        struct multi_base<Policy, Base, boost::true_type> : Policy {};
+
+        template<class Policy, class Base>
+        struct multi_base<Policy, Base, boost::false_type> : Policy, Base {};
+
+        template<class Policy, class Base>
+        struct policy_chain_node<Policy, Base, boost::false_type> : multi_base<Policy, Base> {};
 
         template<class Policy, class Base>
         struct policy_chain_node<Policy, Base, boost::true_type> : Policy::template type<Base> {};

@@ -18,7 +18,9 @@ namespace ans {
 template<class U>
 struct pimpl
 {
-    struct implementation;
+    struct data;
+    struct method;
+    typedef data implementation;
     template<class> class impl_ptr;
     template<template<class> class> class detail;
     typedef detail<impl_ptr> value_semantics;
@@ -79,9 +81,10 @@ class pimpl<T>::detail : pimpl_base_
 
     public:
 
-    typedef detail<Policy> base;
+    //typedef detail<Policy> base;
+    typedef detail<Policy> impl;
     void internal_bool() {};
-    typedef void (base::*bool_type)();
+    typedef void (impl::*bool_type)();
 
     // For simple non-polymorphic cases it's natural to call Foo::null().
     // For polymorphic classes (like Base and Derived) Derived::null() will still return an instance
@@ -98,11 +101,11 @@ class pimpl<T>::detail : pimpl_base_
     // That is, a call to Pimpl::null<NotDerived>() will not compile.
     template<class Derived>
     static
-    typename boost::enable_if<boost::is_base_of<base, Derived>, Derived>::type
+    typename boost::enable_if<boost::is_base_of<impl, Derived>, Derived>::type
     null()
     {
         null_type null_value;
-        base instance(null_value);
+        impl instance(null_value);
         return *(Derived*) &instance;
     }
 
@@ -126,7 +129,7 @@ class pimpl<T>::detail : pimpl_base_
     // indirect way via an implicit conversion to some pointer type. The best type for the purpose
     // appears to be a pointer to a member function. For more see the chapter 7.7 in Alexandrescu's
     // "Modern C++ Design" and how that functionality is implemented for boost::shared_ptr.
-    operator bool_type() const { return impl_.get() ? &base::internal_bool : 0; }
+    operator bool_type() const { return impl_.get() ? &impl::internal_bool : 0; }
 
     void swap(T& that) { impl_.swap(that.impl_); }
 
@@ -136,6 +139,7 @@ class pimpl<T>::detail : pimpl_base_
     struct     null_type {};
 
     typedef typename pimpl<T>::implementation implementation;
+    typedef typename pimpl<T>::method method;
 
    ~detail () {} // Defined explicitly as 'protected'.
     detail (null_type) {} // Creates an invalid instance (like NULL for raw pointers).
@@ -155,6 +159,12 @@ class pimpl<T>::detail : pimpl_base_
     implementation const& operator *() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
     implementation*       operator->()       { BOOST_ASSERT(impl_.get()); return  impl_.get(); }
     implementation&       operator *()       { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+
+    implementation const& _data() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+    implementation&       _data()       { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
+
+    method const& _method() const { return *static_cast<const method*>(this); }
+    method&       _method()       { return *static_cast<method*>(this); }
 
     // Support for
     // a) lazy instantiation and
@@ -200,7 +210,7 @@ class pimpl<T>::detail : pimpl_base_
 #undef  __IF_NOT_PIMPL__
 #define __IF_NOT_PIMPL__(A) typename boost::disable_if<\
         boost::mpl::or_<\
-            boost::is_base_of<base, A>, \
+            boost::is_base_of<impl, A>, \
             boost::is_same<A, use_default_ctor>\
         >, \
         internal_type*\
@@ -281,7 +291,7 @@ __IF_PIMPL_RGHT__(A,B) operator!=(A const& a, B const& b) { return !(a == A(b));
     void                                                    \
     __CLASS__::serialize(Archive& a, unsigned int)          \
     {                                                       \
-        a & boost::serialization::base_object<base>(*this); \
+        a & boost::serialization::base_object<impl>(*this); \
     }                                                       \
     /* Explicit instantiation of the serialization code */  \
     /* Add other archives when you use them */              \
