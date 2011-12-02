@@ -163,6 +163,10 @@ class pimpl<T>::detail : pimpl_base_
     implementation const& _data() const { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
     implementation&       _data()       { BOOST_ASSERT(impl_.get()); return *impl_.get(); }
 
+    /**
+     *  If you get compile error here, you may need to derive ans::pimpl<foo>::method
+     *  from foo publicly.
+     */
     method const& _method() const { return *static_cast<const method*>(this); }
     method&       _method()       { return *static_cast<method*>(this); }
 
@@ -215,8 +219,13 @@ class pimpl<T>::detail : pimpl_base_
         >, \
         internal_type*\
     >::type =0
-    template<class A1> detail(A1 const& a1, __IF_NOT_PIMPL__(A1)) : impl_(new implementation(a1)) {}
-    template<class A1> detail(A1&       a1, __IF_NOT_PIMPL__(A1)) : impl_(new implementation(a1)) {}
+
+    template<class A1> detail(A1 &&a1, __IF_NOT_PIMPL__(
+        typename boost::remove_const<
+            typename boost::remove_reference<A1>::type
+            >::type
+        )) :
+        impl_(new implementation(std::forward<A1>(a1))) {}
 #undef  __IF_NOT_PIMPL__
 
 #   include "detail/pimpl.h" // More constructors with more parameters.

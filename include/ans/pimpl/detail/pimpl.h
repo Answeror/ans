@@ -21,95 +21,129 @@
 // See http://www.ddj.com/dept/cpp/184401243.
 //
 
-#undef  __PIMPL_CONSTRUCTOR__
-#define __PIMPL_CONSTRUCTOR__(c1, c2)   \
-    template<class A1, class A2>        \
-    detail(A1 c1& a1, A2 c2& a2)        \
-    : impl_(new implementation(a1,a2)) {}
+template<class A1, class A2>
+detail(A1 &&a1, A2 &&a2) :
+    impl_(new implementation(
+        std::forward<A1>(a1),
+        std::forward<A2>(a2)
+        )) {}
 
-__PIMPL_CONSTRUCTOR__ (     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,const)
-__PIMPL_CONSTRUCTOR__ (const,     )
-__PIMPL_CONSTRUCTOR__ (const,const)
+template<class A1, class A2, class A3>
+detail(A1 &&a1, A2 &&a2, A3 &&a3) :
+    impl_(new implementation(
+        std::forward<A1>(a1),
+        std::forward<A2>(a2),
+        std::forward<A3>(a3)
+        )) {}
 
-#undef  __PIMPL_CONSTRUCTOR__
-#define __PIMPL_CONSTRUCTOR__(c1, c2, c3)   \
-    template<class A1, class A2, class A3>  \
-    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3) \
-    : impl_(new implementation(a1,a2,a3)) {}
+template<class A1, class A2, class A3, class A4>
+detail(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4) :
+    impl_(new implementation(
+        std::forward<A1>(a1),
+        std::forward<A2>(a2),
+        std::forward<A3>(a3),
+        std::forward<A4>(a4)
+        )) {}
 
-__PIMPL_CONSTRUCTOR__ (     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,const,     )
-__PIMPL_CONSTRUCTOR__ (const,const,const)
+template<class A1, class A2, class A3, class A4, class A5>
+detail(A1 &&a1, A2 &&a2, A3 &&a3, A4 &&a4, A5 &a5) :
+    impl_(new implementation(
+        std::forward<A1>(a1),
+        std::forward<A2>(a2),
+        std::forward<A3>(a3),
+        std::forward<A4>(a4),
+        std::forward<A5>(a5)
+        )) {}
 
-#undef  __PIMPL_CONSTRUCTOR__
-#define __PIMPL_CONSTRUCTOR__(c1, c2, c3, c4)           \
-    template<class A1, class A2, class A3, class A4>    \
-    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3, A4 c4& a4)  \
-    : impl_(new implementation(a1,a2,a3,a4)) {}
-
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,const,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (const,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,const,const,     )
-__PIMPL_CONSTRUCTOR__ (const,const,const,const)
-
-#undef  __PIMPL_CONSTRUCTOR__
-#define __PIMPL_CONSTRUCTOR__(c1, c2, c3, c4, c5)                   \
-    template<class A1, class A2, class A3, class A4, class A5>      \
-    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3, A4 c4& a4, A5 c5& a5)   \
-    : impl_(new implementation(a1,a2,a3,a4,a5)) {}
-
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,     ,const,const,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (     ,const,const,const,     )
-__PIMPL_CONSTRUCTOR__ (     ,const,const,const,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,     ,const,const,     )
-__PIMPL_CONSTRUCTOR__ (const,     ,const,const,const)
-__PIMPL_CONSTRUCTOR__ (const,const,     ,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,const,     ,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,const,     ,const,     )
-__PIMPL_CONSTRUCTOR__ (const,const,     ,const,const)
-__PIMPL_CONSTRUCTOR__ (const,const,const,     ,     )
-__PIMPL_CONSTRUCTOR__ (const,const,const,     ,const)
-__PIMPL_CONSTRUCTOR__ (const,const,const,const,     )
-__PIMPL_CONSTRUCTOR__ (const,const,const,const,const)
-
-#undef __PIMPL_CONSTRUCTOR__
+//#undef  __PIMPL_CONSTRUCTOR__
+//#define __PIMPL_CONSTRUCTOR__(c1, c2)   \
+//    template<class A1, class A2>        \
+//    detail(A1 c1& a1, A2 c2& a2)        \
+//    : impl_(new implementation(a1,a2)) {}
+//
+//__PIMPL_CONSTRUCTOR__ (     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,     )
+//__PIMPL_CONSTRUCTOR__ (const,const)
+//
+//#undef  __PIMPL_CONSTRUCTOR__
+//#define __PIMPL_CONSTRUCTOR__(c1, c2, c3)   \
+//    template<class A1, class A2, class A3>  \
+//    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3) \
+//    : impl_(new implementation(a1,a2,a3)) {}
+//
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,const)
+//
+//#undef  __PIMPL_CONSTRUCTOR__
+//#define __PIMPL_CONSTRUCTOR__(c1, c2, c3, c4)           \
+//    template<class A1, class A2, class A3, class A4>    \
+//    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3, A4 c4& a4)  \
+//    : impl_(new implementation(a1,a2,a3,a4)) {}
+//
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,const,const)
+//
+//#undef  __PIMPL_CONSTRUCTOR__
+//#define __PIMPL_CONSTRUCTOR__(c1, c2, c3, c4, c5)                   \
+//    template<class A1, class A2, class A3, class A4, class A5>      \
+//    detail(A1 c1& a1, A2 c2& a2, A3 c3& a3, A4 c4& a4, A5 c5& a5)   \
+//    : impl_(new implementation(a1,a2,a3,a4,a5)) {}
+//
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,     ,const,const,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (     ,const,const,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,     ,const,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,     ,const,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,const,     ,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,const,     ,const)
+//__PIMPL_CONSTRUCTOR__ (const,const,const,const,     )
+//__PIMPL_CONSTRUCTOR__ (const,const,const,const,const)
+//
+//#undef __PIMPL_CONSTRUCTOR__
 
 // Implement more when needed.
 

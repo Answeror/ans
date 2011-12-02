@@ -104,10 +104,7 @@ namespace ans
 
         explicit data_holder(concrete_type &&data) : m_data(std::move(data)) {}
 
-        explicit data_holder(const erased_type &data)
-        {
-            set(data);
-        }
+        explicit data_holder(const erased_type &data) : m_data(checked_cast(data)) {}
 
     public:
         struct donothing_t
@@ -268,10 +265,17 @@ namespace ans
             const After &after
             )
         {
+            set(checked_cast(data), before, after);
+        }
+
+    private:
+        static auto checked_cast(const erased_type &data) ->
+            decltype(*policy::cast<concrete_type>(&data))
+        {
             auto p = policy::cast<concrete_type>(&data);
             // bug here, not a exception, so use assert
             BOOST_ASSERT_MSG(p, "Wrong data type.");
-            set(*p, before, after);
+            return *p;
         }
 
     private:

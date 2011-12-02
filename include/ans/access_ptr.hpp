@@ -39,10 +39,16 @@ public:
 public:
     // Use this constructor carefully.
     access_ptr() : f() {}
+
+    /// construct from a functor directly
+    explicit access_ptr(const accessor &f) : f(f) {}
+
+    /// construct from a rvalue functor directly
+    explicit access_ptr(accessor &&f) : f(std::move(f)) {}
     
     // Convert from shared_ptr with other value type.
     template<class U>
-    access_ptr(boost::shared_ptr<U> p) : 
+    explicit access_ptr(boost::shared_ptr<U> p) : 
         f(make_shared_accessor(p))
     {
         //assert(p && "Null pointer.");
