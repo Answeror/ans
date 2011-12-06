@@ -25,7 +25,21 @@ struct pimpl
     template<template<class> class> class detail;
     typedef detail<impl_ptr> value_semantics;
     typedef detail<boost::shared_ptr> pointer_semantics;
+
+    // 2011-01-06 Answeror added, to make it pass compile when used in dll when
+    // detail is instantiated totally.
+    struct use_default_ctor {};
 };
+
+namespace pimpl_detail
+{
+    template<class T, template<class> class U>
+    inline typename const typename pimpl<T>::method&
+        to_method(const typename pimpl<T>::template detail<U> &self)
+    {
+        return static_cast<const typename pimpl<T>::method&>(self);
+    }
+}
 
 template<class U>
 template<class T>
@@ -140,6 +154,7 @@ class pimpl<T>::detail : pimpl_base_
 
     typedef typename pimpl<T>::implementation implementation;
     typedef typename pimpl<T>::method method;
+    typedef typename pimpl<T>::data data;
 
    ~detail () {} // Defined explicitly as 'protected'.
     detail (null_type) {} // Creates an invalid instance (like NULL for raw pointers).
@@ -166,9 +181,14 @@ class pimpl<T>::detail : pimpl_base_
     /**
      *  If you get compile error here, you may need to derive ans::pimpl<foo>::method
      *  from foo publicly.
+     *  
+     *  Use Dummy to make this method dependent on template argument, so when
+     *  used in dll exported class will not cause compile error.
      */
-    method const& _method() const { return *static_cast<const method*>(this); }
-    method&       _method()       { return *static_cast<method*>(this); }
+    template<class Dummy>
+    method const& _method(Dummy) const { return pimpl_detail::to_method<T>(*this); }
+    template<class Dummy>
+    method&       _method(Dummy dummy)       { return const_cast<method&>(static_cast<const impl*>(this)->_method(dummy)); }
 
     // Support for
     // a) lazy instantiation and
@@ -204,7 +224,8 @@ class pimpl<T>::detail : pimpl_base_
     
     // 2011-01-06 Answeror added, to make it pass compile when used in dll when
     // detail is instantiated totally.
-    struct use_default_ctor {};
+    typedef typename pimpl<T>::use_default_ctor use_default_ctor;
+
     template<class UseDefaultCtor>
     detail(
         UseDefaultCtor, 

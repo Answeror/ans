@@ -17,6 +17,11 @@
 #include <boost/assert.hpp>
 #include <boost/any.hpp>
 #include <boost/dynamic_any.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/is_reference.hpp>
+#include <boost/type_traits/is_const.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/mpl/not.hpp>
 
 namespace ans
 {
@@ -70,6 +75,17 @@ namespace ans
         template<class U>
         static erased_type erase(const U &data) { return data; }
     };
+
+    namespace data_holder_detail
+    {
+        /// this class is used to test whether need to disable specialization
+        template<class Concrete, class Erased>
+        struct legal : boost::mpl::not_<boost::mpl::or_<
+            boost::is_same<Concrete, Erased>,
+            boost::is_const<Concrete>,
+            boost::is_reference<Concrete>
+            > > {};
+    }
         
     /**
      *  This class is used to hold a concrete type and provide both concrete
@@ -89,6 +105,8 @@ namespace ans
         >
     class data_holder
     {
+        static_assert(data_holder_detail::legal<ConcreteType, ErasedType>::value, "Illegal concrete type.");
+
     private:
         typedef data_holder_type_erase_policy<ErasedType> policy;
 

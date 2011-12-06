@@ -31,8 +31,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
-#include "tag.hpp"
-
 namespace ans
 {
     namespace mpl = boost::mpl;
