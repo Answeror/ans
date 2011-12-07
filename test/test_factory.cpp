@@ -3,6 +3,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <ans/factory.hpp>
+#include <ans/factory_impl.hpp>
 
 struct base
 {

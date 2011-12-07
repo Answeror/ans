@@ -11,27 +11,11 @@
  */
 
 #include <map>
-#include <string>
-#include <memory>
 
-//#include <boost/shared_ptr.hpp>
-//#include <boost/make_shared.hpp>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/serialization/singleton.hpp>
-//#include <boost/function_types/result_type.hpp>
-//#include <boost/function_types/parameter_types.hpp>
-//#include <boost/function_types/function_type.hpp>
-//#include <boost/mpl/push_front.hpp>
-#include <boost/functional/forward_adapter.hpp>
-#include <boost/functional/factory.hpp>
-#include <boost/format.hpp>
-#include <boost/type_traits/is_convertible.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/identity.hpp>
-#include <boost/shared_ptr.hpp>
 
-#include <ans/b4main.hpp>
 #include <ans/factory_fwd.hpp>
 
 namespace ans
@@ -126,26 +110,16 @@ namespace ans
          *  identifier definition.
          */
         template<class Product>
-        struct product_traits
-        {
-            /// get the identifier of the product type
-            static identifier_type identifier() { return Product::identifier(); }
-        };
+        struct product_traits;
 
     public:
-        static factory & instance() { return boost::serialization::singleton<factory>::get_mutable_instance(); }
+        static factory & instance();
 
-        /// get factory methos by given id
-        static const maker_type & make(const identifier_type &id)
-        {
-            return instance()[id];
-        }
+        /// get factory methods by given id
+        static const maker_type & make(const identifier_type &id);
 
-        /// register productor by given id and factory method
-        static void register_product(const identifier_type &id, const maker_type &maker)
-        {
-            return instance()._register_product(id, maker);
-        }
+        /// register product by given id and factory method
+        static void register_product(const identifier_type &id, const maker_type &maker);
 
         /**
          *  Register by type.
@@ -153,72 +127,23 @@ namespace ans
          *  Product should have static member function 'identity' or specialize
          *  'product_traits'
          *  
-         *  <b>This function template only need to be instanciate explicitly,
+         *  <b>This function template only need to be instantiate explicitly,
          *  and don't need to be called actually.</b>
          */
         template<class Product>
-        static void register_product()
-        {
-            struct auto_register_product
-            {
-                typedef auto_register_product this_type;
-                typedef Product product_type;
-                struct failed;
-                typedef typename
-                    boost::mpl::eval_if<
-                        boost::is_convertible<std::unique_ptr<product_type>, result_type>,
-                        boost::mpl::identity<std::unique_ptr<product_type> >,
-                        boost::mpl::eval_if<
-                            boost::is_convertible<boost::shared_ptr<product_type>, result_type>,
-                            boost::mpl::identity<boost::shared_ptr<product_type> >,
-                            boost::mpl::eval_if<
-                                boost::is_convertible<product_type*, result_type>,
-                                boost::mpl::identity<product_type*>,
-                                failed
-                                >
-                            >
-                        >::type product_ptr;
-                typedef boost::forward_adapter<boost::factory<product_ptr> > maker;
-
-                /// a simple wrapper of factory::add
-                static void execute()
-                {
-                    factory::instance().register_product(
-                        product_traits<product_type>::identifier(),
-                        maker()
-                        );
-                }
-            };
-            b4main<&auto_register_product::execute>();
-        }
+        static void register_product();
 
     private:
         /// make it private for singleton
-        factory() {}
+        factory();
 
         /// expose construct to boost
         friend boost::serialization::detail::singleton_wrapper<factory>;
 
-        void _register_product(const identifier_type &id, const maker_type &maker)
-        {
-            auto i = m_makers.find(id);
-            if (i == m_makers.end()) {
-                m_makers[id] = maker;
-            } else {
-                throw std::runtime_error((boost::format("Product id '%1%' already registered.") % id).str());
-            }
-        }
+        void _register_product(const identifier_type &id, const maker_type &maker);
 
-        /// get factory methos by given id, just for internal use
-        const maker_type & operator [](const identifier_type &id) const
-        {
-            auto i = m_makers.find(id);
-            if (i == m_makers.end()) {
-                throw std::runtime_error((boost::format("Product id '%1%' haven't been registered.") % id).str());
-            } else {
-                return i->second;
-            }
-        }
+        /// get factory methods by given id, just for internal use
+        const maker_type & operator [](const identifier_type &id) const;
 
     private:
         std::map<identifier_type, maker_type> m_makers;

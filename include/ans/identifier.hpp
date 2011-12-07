@@ -11,6 +11,8 @@
  *  
  */
 
+#include <string>
+
 #include <boost/mpl/bool.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
