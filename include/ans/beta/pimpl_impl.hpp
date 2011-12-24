@@ -136,7 +136,7 @@ namespace ans { namespace beta { namespace pimpl {
         unique<Data, Method>::data()
     {
         return const_cast<data_type&>(
-            boost::implicit_cast<const this_type&>(*this)());
+            boost::implicit_cast<const this_type&>(*this).data());
     }
 }
 }
