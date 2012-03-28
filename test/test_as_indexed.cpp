@@ -11,6 +11,7 @@
 
 #include <vector>
 
+#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 

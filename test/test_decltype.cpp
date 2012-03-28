@@ -9,6 +9,7 @@
     #define BOOST_RESULT_OF_USE_DECLTYPE
 #endif
 
+#define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/result_of.hpp>

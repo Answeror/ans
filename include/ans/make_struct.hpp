@@ -11,6 +11,7 @@
  *  
  */
 
+#define BOOST_FUSION_INVOKE_MAX_ARITY 10
 #include <boost/fusion/include/invoke.hpp>
 #include <boost/preprocessor/iteration/local.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
@@ -32,7 +33,7 @@ namespace ans
             }
 
 /// modify this number to provide more overloading            
-#define ANS_MAKE_STRUCT_OVERLOAD_COUNT 5
+#define ANS_MAKE_STRUCT_OVERLOAD_COUNT 10
 #define ANS_MAKE_STRUCT_OVERLOAD(z, n, unused)\
             template<BOOST_PP_ENUM_PARAMS(n, class A)>\
             T operator ()(BOOST_PP_ENUM_BINARY_PARAMS(n, A, &&a)) const\
