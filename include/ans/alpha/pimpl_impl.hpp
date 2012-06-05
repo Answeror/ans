@@ -27,6 +27,22 @@ namespace ans { namespace alpha { namespace pimpl {
     unique<Data>::unique(detail::use_default_ctor<Dummy>) :
         m(new data_type()) {}
 
+#ifdef BOOST_NO_RVALUE_REFERENCES
+    template<class Data>
+    template<class A1>
+    unique<Data>::unique(A1 &a1) :
+        m(new data_type(
+            a1
+            )) {}
+ 
+    template<class Data>
+    template<class A1, class A2>
+    unique<Data>::unique(A1 &a1, A2 &a2) :
+        m(new data_type(
+            a1,
+            a2
+            )) {}
+#else
     template<class Data>
     template<class A1>
     unique<Data>::unique(A1 &&a1) :
@@ -41,6 +57,7 @@ namespace ans { namespace alpha { namespace pimpl {
             std::forward<A1>(a1),
             std::forward<A2>(a2)
             )) {}
+#endif
      
     template<class Data>
     unique<Data>::~unique() {}

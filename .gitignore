@@ -1,3 +1,5 @@
+*.swp
+
 bin/
 Debug*/
 ipch/
@@ -5,7 +7,6 @@ lib/
 Microsoft*/
 Release*/
 doc/
-misc/3rd/
 
 .svn/
 */.svn/

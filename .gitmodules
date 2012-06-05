@@ -1,0 +1,3 @@
+[submodule "misc\\3rd\\acmake"]
+	path = misc\\3rd\\acmake
+	url = git@github.com:Answeror/ACMake.git
